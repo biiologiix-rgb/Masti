@@ -1,0 +1,150 @@
+:root {
+      --primary-color: #2563eb;
+      --primary-hover: #1d4ed8;
+      --secondary-color: #f8fafc;
+      --text-color: #1e293b;
+      --light-gray: #e2e8f0;
+      --dark-gray: #64748b;
+      --success-color: #10b981;
+      --error-color: #ef4444;
+    }
+   body {
+      background: linear-gradient(135deg, #f3f4f7 0%, #e2e8f0 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .navbar {
+      background-color: var(--primary-color);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 0.5rem 0;
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .navbar-brand i {
+      margin-right: 10px;
+      font-size: 1.5rem;
+    }
+    /* Make profile photos round and consistent size */
+    /* .rounded-photo {
+      border-radius: 10%;
+      object-fit: cover;
+      width: 80px;
+      height: 80px;
+    } */
+    .rounded-photo {
+      border-radius: 10%;
+      object-fit: cover;
+      width: 100px;
+      height: 100px;
+    }
+
+    /* Responsive tweaks for table */
+  @media (max-width: 768px) {
+  .table-responsive { font-size: 0.95rem; }
+  .navbar-brand { font-size: 1.1rem; }
+  .table th, .table td { white-space: nowrap; }
+  .btn, .btn-sm { font-size: 0.95rem; }
+  }
+  .sort-icon {
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+
+/* Mobile-first responsive styles */
+@media (max-width: 767.98px) {
+  .table-responsive {
+    font-size: 0.85rem;
+    border: 0;
+  }
+  
+  .table thead {
+    display: none;
+  }
+  
+  .table, .table tbody, .table tr, .table td {
+    display: block;
+    width: 100%;
+  }
+  
+  .table tr {
+    margin-bottom: 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+  }
+  
+  .table td {
+    text-align: right;
+    padding-left: 40%;
+    padding-right: 5px;
+    position: relative;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  .table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 1rem;
+    width: 45%;
+    padding-right: 1rem;
+    font-weight: 600;
+    text-align: left;
+    color: var(--dark-gray);
+  }
+  
+  .table td:last-child {
+    border-bottom: 0;
+  }
+  
+  .rounded-photo {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .table-responsive {
+    font-size: 0.9rem;
+  }
+  
+  .table th, .table td {
+    padding: 0.5rem;
+  }
+  
+  .rounded-photo {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 992px) {
+  .table-responsive {
+    font-size: 0.95rem;
+  }
+  
+  .rounded-photo {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+/* Add this for the mobile table cells */
+@media (max-width: 767.98px) {
+    .table td[data-label]::before {
+        content: attr(data-label);
+        /* Optional styling */
+        font-weight: bold;
+        display: inline-block;
+        margin-right: 0.5em;
+    }
+}

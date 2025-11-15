@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Venvs
+env/
+venv/
+.venv/
+
+# Git & IDE
+.git/
+.gitignore
+.idea/
+.vscode/
+
+# OS junk
+.DS_Store
+
+# Node
+node_modules/
+
+# Byte-compiled
+*.egg-info/
+dist/
+build/

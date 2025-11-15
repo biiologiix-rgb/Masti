@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #0d6efd;
+      --secondary-color: #6c757d;
+      --card-width-lg: 420px;
+    }
+    
+    body {
+      background-color: #f8f9fa;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .login-card {
+      width: 100%;
+      max-width: var(--card-width-lg);
+      border-radius: 10px;
+      border: none;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      padding: 2.5rem;
+    }
+    
+    .login-header {
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-bottom: 2rem;
+      text-align: center;
+      font-size: 1.75rem;
+      letter-spacing: 0.5px;
+    }
+    
+    .form-label {
+      font-weight: 500;
+      color: var(--secondary-color);
+      margin-bottom: 0.5rem;
+    }
+    
+    .form-control {
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+    }
+    
+    .btn-login {
+      background-color: var(--primary-color);
+      border: none;
+      padding: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      border-radius: 8px;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-login:hover {
+      background-color: #0b5ed7;
+      transform: translateY(-2px);
+    }
+    
+    .alert {
+      border-radius: 8px;
+    }
+
+    /* Password input group styling */
+    .password-input-group {
+      position: relative;
+    }
+    
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: var(--secondary-color);
+      background: none;
+      border: none;
+      padding: 0 0.5rem;
+    }
+    
+    .toggle-password:hover {
+      color: var(--primary-color);
+    }
+    
+    .toggle-password:focus {
+      outline: none;
+    }
+
+    /* Responsive adjustments for laptop */
+    @media (min-width: 992px) {
+      .login-card {
+        padding: 3rem;
+      }
+      
+      .login-header {
+        font-size: 2rem;
+        margin-bottom: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-card shadow">
+    <h1 class="login-header">Admin Login</h1>
+    
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          {{ messages[0] }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endif %}
+    {% endwith %}
+    
+    <form method="POST">
+      <div class="mb-4">
+        <label class="form-label">Username</label>
+        <input type="text" name="username" class="form-control" required>
+      </div>
+      
+      <div class="mb-4">
+        <label class="form-label">Password</label>
+        <div class="password-input-group">
+          <input type="password" name="password" id="passwordField" class="form-control" required>
+          <button type="button" class="toggle-password" id="togglePassword">
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
+      </div>
+      
+      <button class="btn btn-primary w-100 btn-login">Login</button>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const togglePassword = document.getElementById('togglePassword');
+      const passwordField = document.getElementById('passwordField');
+      
+      togglePassword.addEventListener('click', function() {
+        const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordField.setAttribute('type', type);
+        
+        // Toggle eye icon
+        this.innerHTML = type === 'password' 
+          ? '<i class="bi bi-eye"></i>' 
+          : '<i class="bi bi-eye-slash"></i>';
+      });
+    });
+  </script>
+</body>
+</html>
