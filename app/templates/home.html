@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>{% block title %}Home | Bio-Logix Attendance Platform{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="https://i.ibb.co/B2pBLzKn/anime-icon.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white overflow-x-hidden">
+    <!-- Animated Background Elements -->
+    <div class="fixed inset-0 z-0">
+        <div class="bird bird-1"></div>
+        <div class="bird bird-2"></div>
+        <div class="bird bird-3"></div>
+        <div class="waterfall">
+            <div class="drop drop-1"></div>
+            <div class="drop drop-2"></div>
+            <div class="drop drop-3"></div>
+            <div class="drop drop-4"></div>
+            <div class="drop drop-5"></div>
+        </div>
+        <div class="particles">
+            <div class="particle particle-1"></div>
+            <div class="particle particle-2"></div>
+            <div class="particle particle-3"></div>
+            <div class="particle particle-4"></div>
+            <div class="particle particle-5"></div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 nav-glass backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="#" class="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent flex items-center">
+                <i class=" me-2"></i>Bio-Logix
+            </a>
+            <button id="mobileMenuBtn" class="md:hidden text-white text-2xl focus:outline-none">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div id="mainNav" class="hidden md:flex space-x-8">
+                <a href="#home" class="nav-item relative px-3 lg:px-4 py-2 transition-all duration-300">Home</a>
+                <a href="#about" class="nav-item relative px-3 lg:px-4 py-2 transition-all duration-300">About</a> 
+                <a href="#attend" class="nav-item relative px-3 lg:px-4 py-2 transition-all duration-300">Attendance</a>
+                <a href="#services" class="nav-item relative px-3 lg:px-4 py-2 transition-all duration-300">Services</a>
+                <a href="#contacts" class="nav-item relative px-3 lg:px-4 py-2 transition-all duration-300">Contact us</a>
+                <!-- <a href="#features" class="nav-item px-4 py-2">Features</a> -->
+                <!-- <a href="#solutions" class="nav-item px-4 py-2">Solutions</a> -->
+                <a href="register.html" class="btn btn-primary flex items-center">
+                    <i class="bi bi-person-plus me-1"></i>Register
+                </a>
+            </div>
+        </div>
+        <div id="mobileNav" class="md:hidden hidden bg-slate-900 px-4 py-2">
+            <a href="#home" class="block py-2 nav-item ">Home</a>
+            <a href="#about" class="block py-2 nav-item">About</a>
+            <a href="#attend" class="block py-2 nav-item ">Attendance</a>
+            <a href="#services" class="block py-2 nav-item ">Services</a>
+            <a href="#contacts" class="block py-2 nav-item ">Contact us</a>
+            <!-- <a href="#features" class="block py-2 nav-item">Features</a> -->
+            <!-- <a href="#solutions" class="block py-2 nav-item">Solutions</a> -->
+            <a href="register.html" class="block py-2 btn btn-primary w-full text-center">Register</a>
+        </div>
+    </nav>
+
+    
+    
+    <section id="home" class="relative min-h-screen items-center justify-center parallax-section pt-20 sm:pt-24">
+      <!-- Hero Section -->
+        <div class="container mx-auto px-4 sm:px-6 z-10" style="
+        border:  2px solid var(--primary-cyan);
+    border-radius: 20px;
+    background: rgba(6, 182, 212, 0.05);
+    overflow: hidden;
+    margin-top: 0%;
+    margin-left: 20%;
+    margin-right: 0%;
+    margin-bottom: 20px;
+    padding: 20px;
+    ">
+            <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                <!-- Text Content -->
+                <div class="space-y-6 sm:space-y-8 text-center lg:text-left">
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
+                        <span class="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                            Future Technology
+                        </span>
+                        <!-- <br>
+                        <span class="text-gray-800">Technology</span> -->
+                    </h1>
+                    
+                    <!-- Continuous Text Animation -->
+                    <div class="text-animation-container h-12 sm:h-16 overflow-hidden">
+                        <div class="text-animation-text text-xl sm:text-xl text-cyan-300"></div>
+                    </div>
+                    
+                    <p class="text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed hero-description max-w-lg mx-auto lg:mx-0">
+                        Experience the next generation of digital innovation with cutting-edge technology and immersive interactions.
+                    </p>
+                    <br>
+                    
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 button-group justify-center lg:justify-start">
+                        <button class="glow-button px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full font-semibold transition-all duration-300 transform hover:scale-105">
+                            <a href="#attend" class="relative px-3 lg:px-4 py-2 transition-all duration-300">Mark-Attendance</a>
+                        </button>
+                        <button class="glass-button px-6 sm:px-8 py-3 sm:py-4 border border-cyan-400 rounded-full font-semibold transition-all duration-300 hover:bg-cyan-400/10">
+                            <a href="register.html"> Register Student</a>
+                           
+                        </button>
+                    </div>
+                </div>
+                <div class="face-scanner-container relative mt-8 lg:mt-0 flex justify-center lg:justify-end">
+                    <div class="face-scanner-frame mx-auto">
+                        <!-- Scanner Grid -->
+                        <div class="scanner-grid"></div>
+                        
+                        <!-- Face Outline -->
+                        <div class="face-outline"></div>
+                        
+                        <!-- Scanning Lines -->
+                        <div class="scan-line scan-line-1"></div>
+                        <div class="scan-line scan-line-2"></div>
+                        
+                        <!-- Hologram Effect -->
+                        <div class="hologram-face">
+                            <div class="hologram-layer hologram-layer-1"></div>
+                            <div class="hologram-layer hologram-layer-2"></div>
+                            <div class="hologram-layer hologram-layer-3"></div>
+                        </div>
+                        
+                        <!-- Scanner UI Elements -->
+                        <div class="scanner-ui">
+                            <div class="scanner-corner corner-tl"></div>
+                            <div class="scanner-corner corner-tr"></div>
+                            <div class="scanner-corner corner-bl"></div>
+                            <div class="scanner-corner corner-br"></div>
+                            
+                            <div class="scanner-text">
+                                <div class="scanner-status text-xs sm:text-sm">SCANNING...</div>
+                                <div class="scanner-progress">
+                                    <div class="progress-bar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- </section>
+    <section id="attendance" class="relative min-h-screen flex items-center justify-center parallax-section pt-20 sm:pt-24"></section> -->
+     <!-- About Section -->
+    <section id="about" class="py-12 sm:py-16 lg:py-20 parallax-section">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-12 sm:mb-16">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-6 sm:mb-8">
+                    About Us
+                </h2>
+                <p class="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto px-4">
+                    We are pioneers in futuristic technology, creating immersive digital experiences that bridge the gap between imagination and reality.
+                </p>
+            </div>
+            
+            <!-- 3D Cards -->
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                <div class="card-3d">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <i class="fas fa-robot text-4xl text-cyan-400 mb-4"></i>
+                            <h3 class="text-2xl font-bold mb-4">AI Technology</h3>
+                            <p class="text-gray-300">Advanced artificial intelligence powering the future of human-computer interaction.</p>
+                        </div>
+                        <div class="card-back">
+                            <h3 class="text-2xl font-bold mb-4">AI Features</h3>
+                            <ul class="text-left space-y-2">
+                                <li>• Machine Learning</li>
+                                <li>• Neural Networks</li>
+                                <li>• Computer Vision</li>
+                                <li>• Natural Language Processing</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-3d">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <i class="fas fa-vr-cardboard text-4xl text-purple-400 mb-4"></i>
+                            <h3 class="text-2xl font-bold mb-4">Virtual Reality</h3>
+                            <p class="text-gray-300">Immersive virtual environments that transform how we interact with digital content.</p>
+                        </div>
+                        <div class="card-back">
+                            <h3 class="text-2xl font-bold mb-4">VR Solutions</h3>
+                            <ul class="text-left space-y-2">
+                                <li>• 3D Environments</li>
+                                <li>• Interactive Simulations</li>
+                                <li>• Spatial Computing</li>
+                                <li>• Haptic Feedback</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-3d">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <i class="fas fa-network-wired text-4xl text-pink-400 mb-4"></i>
+                            <h3 class="text-2xl font-bold mb-4">IoT Integration</h3>
+                            <p class="text-gray-300">Seamless connectivity between devices creating smart, responsive environments.</p>
+                        </div>
+                        <div class="card-back">
+                            <h3 class="text-2xl font-bold mb-4">IoT Capabilities</h3>
+                            <ul class="text-left space-y-2">
+                                <li>• Smart Sensors</li>
+                                <li>• Real-time Data</li>
+                                <li>• Automated Systems</li>
+                                <li>• Cloud Integration</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Attendence Marking section -->
+    <!-- <main id='container' class="container" style="border:  2px solid var(--primary-cyan);border-radius: 20px;background: rgba(6, 182, 212, 0.05);overflow: hidden;/* margin-top: 20px; */margin-bottom: 20px;padding: 20px;"> -->
+    <section  class=" parallax-section" style="
+    border:  2px solid var(--primary-cyan);
+    border-radius: 20px;
+    background: rgba(6, 182, 212, 0.05);
+    overflow: hidden;
+    /* margin-top: 20px; */
+    margin-bottom: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    padding-top: 20px;
+    padding-bottom:10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    ">
+    <div class="text-center mb-12 sm:mb-1" id="attend">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-6 sm:mb-8">
+                    Mark Attendance
+                </h2>
+            </div>
+        <div id="digital-clock" class="digital-clock-row mb-4">
+            <div  class="clock-day" id="clock-day"></div>
+            <div class="clock-ampm" id="clock-ampm"></div>
+            <div class="clock-time" id="clock-time"></div>
+            <div class="clock-seconds" id="clock-seconds"></div>
+            <div class="clock-datebox">
+                <div class="clock-month" id="clock-month"></div>
+                <div class="clock-date" id="clock-date"></div>
+            </div>
+        </div>
+        <div class="container mt-5 mb-5" >
+            <div class="text-center mb-12 sm:mb-16">
+        <p class="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto px-4">
+                    Select Your Field and Course to mark attendance using our advanced face scanning technology.
+                </p>
+        </div>
+    <div class="container mt-5">
+            <div class="mb-3">
+              <label for="field" class="form-label mb-0 me-2"><h3 class="text-2xl font-bold ">Select Field:</h3></label>
+              <div class="input-group" style="max-width: 900px;">
+                  <select id="field" name="field" class="form-select" required>
+                      <option value="" selected disabled class="placeholder-option">Select Field</option>
+                      <option value="BTech">BTech</option>
+                      <option value="BCA">BCA</option>
+                      <option value="Nursing">Nursing</option>
+                  </select>
+                  <span class="input-group-text" id="refreshField" title="Reset Field" style="cursor:pointer; color:#2563eb; background:transparent; border-left:0;">
+                      <i class="bi bi-arrow-counterclockwise"></i>
+                  </span>
+              </div>
+            </div>
+          <div class="mb-3">
+              <label for="course" class="form-label"><h3 class="text-2xl font-bold ">Select Course:</h3></label>
+              <select id="course" name="course" class="form-select" required style="max-width: 900px;">
+                  <option value="" selected disabled class="placeholder-option">Select Course</option>
+              </select>
+          </div>
+        </div>
+        </div>
+        
+        
+        <div id="scanner-wrapper" class="row mt-4" style="display: none;">
+            <div id="attendance-alert"></div>
+            <!-- Left Side: Face Scanner -->
+            <div class="col-lg-6 mb-4">
+                <h5>Face Scanner</h5>
+                <video id="video" autoplay playsinline></video>
+                <canvas id="canvas" width="450" height="300" style="display:none;"></canvas>
+                
+                <div id="scan-countdown" style="display: none; text-align: center;">
+                    <div id="delay-control" class="mb-3">
+                        <label for="scanDelay">Adjust Scan Delay (sec):</label>
+                        <select id="scanDelay" class="form-select w-auto d-inline-block ms-2">
+                            <option value="3">3</option>
+                            <option value="5" selected>5</option>
+                            <option value="7">7</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
+                    <div style="margin: 10px auto;">
+                        <p id="countdown-number"></p>
+                    </div>
+                    <p>Scanning in <span id="countdown-text">6</span> seconds...</p>
+                </div>
+                
+                <button type="button" class="btn btn-primary mt-2 w-100" onclick="captureAndSend()">Scan Face</button>
+            </div>
+            
+            <!-- Right Side: Student Info -->
+            <div class="col-lg-6 mb-4">
+                <h5 id="student-info-heading" style="display: none;">Student Info</h5>
+                <div id="student-info" style="display: none; border: 2px solid #333; padding: 15px; border-radius: 10px; background-color: #f9f9f9;">
+                    <p><strong>Name:</strong> <span id="student-name"></span></p>
+                    <p><strong>Roll:</strong> <span id="student-roll"></span></p>
+                    <p><strong>Field:</strong> <span id="student-field"></span></p>
+                    <p><strong>Course:</strong> <span id="student-course"></span></p>
+                    <button id="mark-attendance" class="btn btn-success w-100 mt-3">Mark Attendance</button>
+                </div>
+            </div>
+        </div>
+        </section>
+    
+    <!-- </main> -->
+    </section>
+    <!-- services section -->
+     <section  class="py-20 parallax-section" style="
+        /* border:  2px solid var(--primary-cyan); */
+    border-radius: 20px;
+    /* background: rgba(6, 182, 212, 0.05); */
+    overflow: hidden;
+    margin-top: 10%;
+    margin-bottom: 20px;
+    padding: 20px;
+    ">
+        <div class="container mx-auto px-6" >
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent mb-8" id="services">
+                    Our Services
+                </h2>
+                <p class="text-xl text-gray-300">
+                    Cutting-edge solutions tailored for the digital future.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">AI Consulting</h3>
+                    <p class="text-gray-300 mb-6">Strategic AI implementation and optimization for your business needs.</p>
+                    <button class="service-btn">Learn More</button>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">3D Development</h3>
+                    <p class="text-gray-300 mb-6">Immersive 3D experiences and interactive visualizations.</p>
+                    <button class="service-btn">Learn More</button>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Cybersecurity</h3>
+                    <p class="text-gray-300 mb-6">Advanced security solutions for digital infrastructure protection.</p>
+                    <button class="service-btn">Learn More</button>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Cloud Solutions</h3>
+                    <p class="text-gray-300 mb-6">Scalable cloud infrastructure and migration services.</p>
+                    <button class="service-btn">Learn More</button>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Mobile Apps</h3>
+                    <p class="text-gray-300 mb-6">Next-generation mobile applications with AR/VR integration.</p>
+                    <button class="service-btn">Learn More</button>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Innovation Lab</h3>
+                    <p class="text-gray-300 mb-6">Experimental technologies and proof-of-concept development.</p>
+                    <button class="service-btn">Learn More</button>
+                </div>
+            </div>
+        </div>
+    </section>
+     
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight">
+                        <span class="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                            Bio-Logix 
+                        </span>
+                    </h5>
+                    <p class="text-animation-container me-1">You can contact us using the below given links! </p>
+                    <div class="social-icons" id="contacts">
+                        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mohitash258@gmail.com&su=Inquiry&body=Hello,%20I%20have%20a%20question..." target="_blank">
+                        <i class="bi bi-envelope-fill"></i> </a>
+                        <a href="https://discord.gg/fs4fvdeA"><i class="bi bi-discord"></i></a>
+                        <a href="https://www.instagram.com/_nexus___"><i class="bi bi-instagram"></i></a>
+                        <!-- <a href="#"><i class="bi bi-linkedin"></i></a> -->
+                        <a href="https://github.com/Nexus-ig"><i class="bi bi-github"></i></a>
+                    </div>
+                </div>
+                <!-- <div class="col-lg-2 col-md-4 mb-4">
+                    <h5>Product</h5>
+                    <ul class="footer-links"> -->
+                        <!-- <li><a href="#">Features</a></li> -->
+                        <!-- <li><a href="#">Solutions</a></li> -->
+                        <!-- <li><a href="#">Pricing</a></li> -->
+                        <!-- <li><a href="#">Demo</a></li>
+                    </ul>
+                </div> -->
+                <!-- <div class="col-lg-2 col-md-4 mb-4">
+                    <h5>Resources</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Guides</a></li>
+                        <li><a href="#">API</a></li>
+                    </ul>
+                </div> -->
+                <div class="col-lg-2 col-md-4 mb-4">
+                    <h3 class="text-2xl font-bold ">Info :</h3>
+                    <ul class="footer-links">
+                        <li><a href="#about" class="nav-item relative px-3 lg:px-4 py-2 transition-all duration-300">About</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Legal</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 mb-4">
+              <h3 class="text-2xl font-bold ">Support :</h3>
+                <div class="dropdown">
+                    <!-- Dropdown Root -->
+                    <div class="relative" 
+                        x-data="{ open: false, closeTimeout: null  }"
+                        @mouseenter="clearTimeout(closeTimeout); if (window.innerWidth > 768) open = true" 
+                        @mouseleave="if (window.innerWidth > 768) { closeTimeout = setTimeout(() => open = false, 10000) }"
+                        >
+                        <!-- Dropdown Button -->
+                        <button 
+                            @click="open = !open" 
+                            class="flex items-center space-x-1 px-4 py-2 text-gray-700 hover:text-blue-600 transition-colors duration-200">
+                            <i class="bi bi-chat-square-dots"></i>
+                            <span>Contacts</span>
+                            <i class="bi bi-chevron-down text-xs transition-transform duration-200" 
+                            :class="{'rotate-180': open}"></i>
+                        </button>
+                        <!-- Dropdown Menu -->
+                        <div 
+                            x-show="open"
+                            x-transition:enter="transition ease-out duration-200"
+                            x-transition:enter-start="opacity-0 translate-y-1"
+                            x-transition:enter-end="opacity-100 translate-y-0"
+                            x-transition:leave="transition ease-in duration-150"
+                            x-transition:leave-start="opacity-100 translate-y-0"
+                            x-transition:leave-end="opacity-0 translate-y-1"
+                            class="absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50"
+                            @click.away="open = false">
+                            <div class="py-1">
+                                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=mohitash258@gmail.com&su=Inquiry&body=Hello,%20I%20have%20a%20question..." target="_blank" 
+                                class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                                <i class="bi bi-envelope-fill mr-3 text-indigo-600"></i>
+                                <span>G-mail</span>
+                                </a>
+                                <a href="https://github.com/Nexus-ig" 
+                                class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                                <i class="bi bi-github mr-3 text-gray-600"></i>
+                                <span>GitHub</span>
+                                </a>
+                                <a href="https://www.instagram.com/_nexus___" 
+                                class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                                <i class="bi bi-instagram mr-3 text-pink-600"></i>
+                                <span>Instagram</span>
+                                </a>
+                                <a href="https://discord.gg/fs4fvdeA" 
+                                class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
+                                <i class="bi bi-discord mr-3 text-indigo-600"></i>
+                                <span>Discord Server</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                <!-- <div class="col-lg-2 mb-4">
+                    <h5>Support</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Status</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Feedback</a></li>
+                    </ul>
+                </div> -->
+                
+            </div>
+            <hr class="mt-4 mb-4" style="border-color: rgba(255,255,255,0.1);">
+            <div class="row">
+                <div class="col-md-6 text-md-start mb-3 mb-md-0">
+                    <p class="animation-text mb-0">&copy; 2025 Bio-Logix. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted mb-0">v2.4.1</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/scan.js') }}"></script>
+    
+    <script>
+    // Field and Course Dropdown Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const fieldCourseMap = {
+            BTech: ['CSE', 'Civil', 'Mechanical'],
+            BCA: ['AI-ML', 'Computer Applications', 'Cyber Security'],
+            Nursing: ['General Nursing', 'Pediatrics', 'Psychiatric']
+        };
+
+        const fieldSelect = document.getElementById("field");
+        const courseSelect = document.getElementById("course");
+        const refreshField = document.getElementById("refreshField");
+        const scannerWrapper = document.getElementById("scanner-wrapper");
+
+        // Populate courses when field changes
+        fieldSelect.addEventListener("change", function() {
+            const selectedField = this.value;
+            courseSelect.innerHTML = '<option value="" selected disabled class="placeholder-option">Select Course</option>';
+            
+            if (selectedField && fieldCourseMap[selectedField]) {
+                fieldCourseMap[selectedField].forEach(course => {
+                    const option = document.createElement("option");
+                    option.value = course;
+                    option.textContent = course;
+                    courseSelect.appendChild(option);
+                });
+            }
+            
+            // Hide scanner when field changes
+            scannerWrapper.style.display = 'none';
+        });
+
+        // Refresh field selection
+        refreshField.addEventListener("click", function() {
+            fieldSelect.selectedIndex = 0;
+            courseSelect.innerHTML = '<option value="" selected disabled class="placeholder-option">Select Course</option>';
+            scannerWrapper.style.display = 'none';
+            
+            const studentInfo = document.getElementById("student-info");
+            const studentHeading = document.getElementById("student-info-heading");
+            
+            if (studentInfo) studentInfo.style.display = 'none';
+            if (studentHeading) studentHeading.style.display = 'none';
+        });
+
+        // Show scanner when both field and course are selected
+        courseSelect.addEventListener("change", function() {
+            if (fieldSelect.value && this.value) {
+                scannerWrapper.style.display = 'flex';
+                startCamera();
+            }
+        });
+
+        // Camera function
+        function startCamera() {
+            const video = document.getElementById('video');
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function(stream) {
+                        video.srcObject = stream;
+                    })
+                    .catch(function(err) {
+                        console.error("Camera error: ", err);
+                    });
+            }
+        }
+    });
+        // Digital Clock
+        function updateDigitalClock() {
+            const now = new Date();
+            const days = ["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
+            const months = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+            
+            const day = days[now.getDay()];
+            const month = months[now.getMonth()];
+            const date = now.getDate();
+            let hour = now.getHours();
+            const min = now.getMinutes().toString().padStart(2, '0');
+            const sec = now.getSeconds().toString().padStart(2, '0');
+            const ampm = hour >= 12 ? "PM" : "AM";
+            
+            hour = hour % 12;
+            hour = hour ? hour : 12; // 0 should be 12
+            
+            document.getElementById('clock-day').textContent = day;
+            document.getElementById('clock-ampm').textContent = ampm;
+            document.getElementById('clock-time').textContent = `${hour}:${min}`;
+            document.getElementById('clock-seconds').textContent = `:${sec}`;
+            document.getElementById('clock-month').textContent = month;
+            document.getElementById('clock-date').textContent = date;
+        }
+        
+        setInterval(updateDigitalClock, 1000);
+        updateDigitalClock();
+        
+        // Mobile menu toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileNav = document.getElementById('mobileNav');
+            
+            if (mobileMenuBtn && mobileNav) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    mobileNav.classList.toggle('hidden');
+                    mobileNav.classList.toggle('block');
+                });
+            }
+            
+            // Close mobile menu when clicking on a link
+            const mobileLinks = mobileNav.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileNav.classList.add('hidden');
+                    mobileNav.classList.remove('block');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pkl
+*.pyc
+.python-version
+.venv/
+venv/
+env/
+
+# Flask/SQLite
+instance/
+*.db
+*.sqlite
+.env
+
+# Face recognition data
+/faces/
+/encodings.pkl
+
+# Local test files
+/test_*
+/local_*
+# Binary files
+*.deb
+*.pkl
+
+# Local instance files
+<<<<<<< HEAD
+instance/
+
+*.log
+*.pot
+*.pyo
+=======
+instance/
+>>>>>>> ef5578902d4d882a5e8d644904acb7748b4247a3

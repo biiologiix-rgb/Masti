@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1d72b8">
+    <title>Registered Students</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+    :root {
+      --primary-color: #1d72b8;
+      --secondary-color: #6f42c1;
+      --dark-color: #2c3e50;
+      --light-color: #f8f9fa;
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+    }
+    
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+    
+    .navbar {
+      background-color: var(--dark-color);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .filter-container {
+      background-color: white;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 1rem;
+    }
+    
+    .table-responsive {
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    }
+    
+    .table th {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 500;
+    }
+    
+    .badge-field {
+      /* background-color: var(--secondary-color); */
+      color: rgb(0, 0, 0);
+    }
+    
+    .badge-course {
+      /* background-color: var(--success-color); */
+      color: rgb(0, 0, 0);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #6c757d;
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #dee2e6;
+    }
+    
+    /* Mobile styles */
+    @media (max-width: 767.98px) {
+      .filter-container {
+        padding: 1rem;
+      }
+      
+      .filter-row {
+        flex-direction: column;
+      }
+      
+      .filter-col {
+        margin-bottom: 1rem;
+        width: 100%;
+      }
+      
+      .date-controls {
+        width: 100%;
+      }
+      
+      .table td {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+      }
+    }
+    
+    /* Card view for mobile */
+    @media (max-width: 575.98px) {
+      table {
+        border: 0;
+      }
+      
+      table thead {
+        display: none;
+      }
+      
+      table tr {
+        display: block;
+        margin-bottom: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+      }
+      
+      table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem;
+        border-bottom: 1px solid #eee;
+        text-align: right;
+      }
+      
+      table td:last-child {
+        border-bottom: 0;
+      }
+      
+      table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        margin-right: 1rem;
+        text-align: left;
+      }
+      
+      .avatar-sm {
+        display: none;
+      }
+    }
+    
+    /* Loading state */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    
+    .spinner {
+      width: 3rem;
+      height: 3rem;
+    }
+    </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container-fluid px-3">
+      <a href="#" class="navbar-brand fw-bold d-flex align-items-center">
+        <i class="bi bi-journal-check me-2"></i>
+        <span class="d-none d-sm-inline">View Registered Students</span>
+        <span class="d-sm-none">Registered Students</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item ms-lg-3">
+            <a class="btn btn-outline-light btn-sm" href="/admin/dashboard">
+              <i class="bi bi-box-arrow-in-right me-1"></i>
+              <span class="d-none d-sm-inline">Back to Dashboard</span>
+              <span class="d-sm-none">Back</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid px-3 py-2">
+    <div class="filter-container">
+      <form id="filter-form" method="POST">
+        <div class="row g-2 filter-row">
+          <div class="col-12 col-md-3 filter-col">
+            <div class="input-group input-group-sm">
+              <input type="date" name="date" id="dateFilter" class="form-control form-control-sm" 
+                    value="{{ selected_date or today }}"
+                    max="{{ today }}"
+                    aria-label="Select date">
+              <button type="button" id="prevDate" class="btn btn-outline-secondary btn-sm" aria-label="Previous day">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <button type="button" id="nextDate" class="btn btn-outline-secondary btn-sm" aria-label="Next day">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+          <div class="col-12 col-md-3 filter-col">
+            <select name="field" id="fieldFilter" class="form-select form-select-sm" aria-label="Filter by field">
+              <option value="">All Fields</option>
+              {% for f in fields %}
+                <option value="{{ f }}" {% if selected_field == f %}selected{% endif %}>{{ f }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-12 col-md-3 filter-col">
+            <select name="course" id="courseFilter" class="form-select form-select-sm" aria-label="Filter by course">
+              <option value="">All Courses</option>
+              {% for c in courses %}
+                  <option value="{{ c }}" {% if selected_course == c %}selected{% endif %}>{{ c }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-12 col-md-3 filter-col">
+            <button type="button" id="resetFilters" class="btn btn-outline-secondary btn-sm w-100">
+              <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h5 class="mb-0">Student Registrations:</h5>
+      <span class="badge bg-primary">{{ students|length }} students</span>
+    </div>
+
+    {% if students|length > 0 %}
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover align-middle mb-0">
+        <thead class="table-dark">
+          <tr>
+            <th data-label="Name">Name</th>
+            <th data-label="Roll">Roll</th>
+            <th data-label="Email">Email</th>
+            <th data-label="Field">Field</th>
+            <th data-label="Course">Course</th>
+            <th data-label="Registered">Registered</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in students %}
+          <tr>
+            <td data-label="Name">
+              <div class="d-flex align-items-center">
+                <!-- <div class="avatar-sm me-2 bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;"> -->
+                  <!-- <i class="bi bi-person-fill"></i> -->
+                </div>
+                <span>{{ student.username }}</span>
+              </div>
+            </td>
+            <td data-label="Roll"><span class="badge bg-light text-dark">{{ student.roll }}</span></td>
+            <td data-label="Email"><a href="mailto:{{ student.email }}" class="text-decoration-none">{{ student.email }}</a></td>
+            <td data-label="Field"><span class="badge badge-field">{{ student.field }}</span></td>
+            <td data-label="Course"><span class="badge badge-course">{{ student.course }}</span></td>
+            <td data-label="Registered">
+              <span class="small text-muted">
+                <i class="bi bi-clock-history me-1"></i>
+                {{ student.created_at|format_local_time('Asia/Kolkata') if student.created_at else 'N/A' }}
+              </span>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="bi bi-people"></i>
+      <h5 class="mt-2">No students found</h5>
+      <p class="text-muted">Try adjusting your filters or check back later</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <div id="loadingOverlay" class="loading-overlay d-none">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const dateInput = document.getElementById('dateFilter');
+      const prevBtn = document.getElementById('prevDate');
+      const nextBtn = document.getElementById('nextDate');
+      const fieldFilter = document.getElementById('fieldFilter');
+      const courseFilter = document.getElementById('courseFilter');
+      const filterForm = document.getElementById('filter-form');
+      const resetBtn = document.getElementById('resetFilters');
+      const loadingOverlay = document.getElementById('loadingOverlay');
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Show loading overlay during form submission
+      filterForm.addEventListener('submit', function() {
+        loadingOverlay.classList.remove('d-none');
+      });
+      
+      // Hide loading overlay when page finishes loading
+      window.addEventListener('load', function() {
+        loadingOverlay.classList.add('d-none');
+      });
+
+      function updateNextBtn() {
+          nextBtn.disabled = (dateInput.value >= today);
+      }
+
+      prevBtn.addEventListener('click', function() {
+          let current = new Date(dateInput.value);
+          current.setDate(current.getDate() - 1);
+          dateInput.value = current.toISOString().split('T')[0];
+          filterForm.submit();
+      });
+
+      nextBtn.addEventListener('click', function() {
+          let current = new Date(dateInput.value);
+          current.setDate(current.getDate() + 1);
+          const newDate = current.toISOString().split('T')[0];
+          if (newDate <= today) {
+              dateInput.value = newDate;
+              filterForm.submit();
+          }
+      });
+
+      dateInput.addEventListener('change', function() {
+          updateNextBtn();
+          filterForm.submit();
+      });
+
+      fieldFilter.addEventListener('change', function() {
+          filterForm.submit();
+      });
+
+      courseFilter.addEventListener('change', function() {
+          filterForm.submit();
+      });
+      
+      resetBtn.addEventListener('click', function() {
+          dateInput.value = today;
+          fieldFilter.value = '';
+          courseFilter.value = '';
+          filterForm.submit();
+      });
+
+      // Dynamic course dropdown (optional, for better UX)
+      const fieldCourseMap = {
+        BTech: ['CSE', 'Civil', 'Mechanical'],
+        BCA: ['AI-ML', 'Computer Applications', 'Cyber Security'],
+        Nursing: ['General Nursing', 'Pediatrics', 'Psychiatric']
+      };
+      
+      fieldFilter.addEventListener('change', function () {
+        const courseSelect = courseFilter;
+        const currentCourse = courseSelect.value;
+        courseSelect.innerHTML = '<option value="">All Courses</option>';
+        const selectedField = this.value;
+        
+        if (selectedField && fieldCourseMap[selectedField]) {
+          fieldCourseMap[selectedField].forEach(course => {
+            const opt = document.createElement('option');
+            opt.value = course;
+            opt.textContent = course;
+            if (course === currentCourse) {
+              opt.selected = true;
+            }
+            courseSelect.appendChild(opt);
+          });
+        }
+      });
+
+      // On page load, disable next arrow if on today
+      updateNextBtn();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+:root {
+      --primary-color: #2563eb;
+      --primary-hover: #1d4ed8;
+      --secondary-color: #f8fafc;
+      --text-color: #1e293b;
+      --light-gray: #e2e8f0;
+      --dark-gray: #64748b;
+      --success-color: #10b981;
+      --error-color: #ef4444;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f3f4f7 0%, #e2e8f0 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .navbar {
+      background-color: var(--primary-color);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .navbar-brand {
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .navbar-brand i {
+      margin-right: 10px;
+      font-size: 1.5rem;
+    }
+    
+    .register-container {
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+      padding: 2.5rem;
+      max-width: 500px;
+      margin: 2rem auto;
+      border: 1px solid var(--light-gray);
+    }
+    
+    .register-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .register-header h2 {
+      font-weight: 700;
+      color: var(--text-color);
+      margin-bottom: 0.5rem;
+    }
+    
+    .register-header p {
+      color: var(--dark-gray);
+      margin-bottom: 0;
+    }
+    
+    .form-control {
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--light-gray);
+      transition: all 0.2s;
+    }
+    
+    .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .form-label {
+      font-weight: 500;
+      color: var(--text-color);
+      margin-bottom: 0.5rem;
+    }
+    
+    .btn-register {
+      background-color: var(--primary-color);
+      border: none;
+      padding: 0.75rem;
+      border-radius: 10px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: all 0.2s;
+    }
+    
+    .btn-register:hover {
+      background-color: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+    
+    .btn-register:active {
+      transform: translateY(0);
+    }
+    
+    .input-group-text {
+      background-color: transparent;
+      border-right: none;
+    }
+    
+    .input-with-icon {
+      border-left: none;
+    }
+    
+    .password-strength {
+      height: 4px;
+      background-color: var(--light-gray);
+      border-radius: 2px;
+      margin-top: 0.5rem;
+      overflow: hidden;
+    }
+    
+    .password-strength-bar {
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease, background-color 0.3s ease;
+    }
+    
+    .password-requirements {
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--dark-gray);
+    }
+    
+    .requirement {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.25rem;
+    }
+    
+    .requirement i {
+      margin-right: 0.5rem;
+      font-size: 0.75rem;
+    }
+    
+    .requirement.valid {
+      color: var(--success-color);
+    }
+    
+    .requirement.invalid {
+      color: var(--error-color);
+    }
+    
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .footer-links a {
+      color: var(--dark-gray);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    
+    .footer-links a:hover {
+      color: var(--primary-color);
+    }
+    
+    .security-info {
+      display: flex;
+      align-items: center;
+      margin-top: 1rem;
+      color: var(--dark-gray);
+      font-size: 0.875rem;
+    }
+    
+    .security-info i {
+      margin-right: 0.5rem;
+      color: var(--success-color);
+    }
+    
+    @media (max-width: 576px) {
+      .register-container {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+    }
+    
+   video {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border: 2px solid #333;
+    border-radius: 10px;
+    display: block;
+    margin: 1rem auto;
+    transform: scaleX(-1); /* Mirror effect */
+  }
+  
+.custom-capture-btn {
+  background-color: #06b6d4; /* Cyan */
+  color: white;
+}
+.custom-capture-btn:hover {
+  background-color: #0891b2; /* Darker cyan */
+}

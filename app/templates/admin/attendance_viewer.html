@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Viewer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #858796;
+            --success-color: #1cc88a;
+            --danger-color: #e74a3b;
+            --info-color: #36b9cc;
+            --dark-color: #5a5c69;
+            --light-color: #f8f9fc;
+        }
+        
+        body {
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fc;
+        }
+        
+        .viewer-container {
+            background-color: white;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            padding: 2rem;
+            margin-top: 1.5rem;
+        }
+        
+        .header-section {
+            border-bottom: 1px solid #e3e6f0;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        .btn-info {
+            background-color: var(--info-color);
+            border-color: var(--info-color);
+        }
+        
+        .status-present {
+            color: var(--success-color);
+            font-weight: 500;
+        }
+        
+        .status-late {
+            color: var(--warning-color);
+            font-weight: 500;
+        }
+        
+        .status-absent {
+            color: var(--danger-color);
+            font-weight: 500;
+        }
+        
+        /* Mobile styles */
+        @media (max-width: 767.98px) {
+            .viewer-container {
+                padding: 1.5rem;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+            }
+            
+            .filter-col {
+                margin-bottom: 1rem;
+                width: 100%;
+            }
+            
+            .date-controls {
+                width: 100%;
+            }
+            
+            .export-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .export-buttons .btn {
+                width: 100%;
+            }
+            
+            table {
+                font-size: 0.85rem;
+            }
+        }
+        
+        /* Card view for mobile table */
+        @media (max-width: 575.98px) {
+            table {
+                border: 0;
+            }
+            
+            table thead {
+                display: none;
+            }
+            
+            table tr {
+                display: block;
+                margin-bottom: 1rem;
+                border: 1px solid #e3e6f0;
+                border-radius: 0.35rem;
+            }
+            
+            table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.75rem;
+                border-bottom: 1px solid #eee;
+                text-align: right;
+            }
+            
+            table td:last-child {
+                border-bottom: 0;
+            }
+            
+            table td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                margin-right: 1rem;
+                text-align: left;
+                color: var(--dark-color);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="viewer-container">
+            <div class="header-section">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="mb-0">
+                        <i class="bi bi-clipboard-data me-2"></i>Attendance Viewer
+                    </h2>
+                    <a href="/admin/dashboard" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Dashboard
+                    </a>
+                </div>
+                
+                <form id="filter-form" method="POST">
+                    <div class="row g-3 filter-row">
+                        <div class="col-md-3 col-12 filter-col">
+                            <div class="input-group date-controls">
+                                <input type="date" name="date" id="dateFilter" class="form-control"
+                                    value="{{ selected_date or today }}"
+                                    max="{{ today }}">
+                                <button type="button" id="prevDate" class="btn btn-outline-secondary">
+                                    <i class="bi bi-chevron-left"></i>
+                                </button>
+                                <button type="button" id="nextDate" class="btn btn-outline-secondary">
+                                    <i class="bi bi-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-12 filter-col">
+                            <select name="field" id="fieldFilter" class="form-select">
+                                <option value="">All Fields</option>
+                                {% for f in fields %}
+                                    <option value="{{ f }}" {% if selected_field == f %}selected{% endif %}>{{ f }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3 col-12 filter-col">
+                            <select name="course" id="courseFilter" class="form-select">
+                                <option value="">All Courses</option>
+                                {% for c in courses %}
+                                    <option value="{{ c }}" {% if selected_course == c %}selected{% endif %}>{{ c }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3 col-12 filter-col">
+                            <select name="student" id="studentFilter" class="form-select">
+                                <option value="">All Students</option>
+                                {% for s in students %}
+                                    <option value="{{ s.id }}" {% if selected_student and s.id == selected_student|int %}selected{% endif %}>{{ s.username }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                <div class="mb-2">
+                    <span class="badge bg-light text-dark">
+                        <i class="bi bi-people-fill me-1"></i>Records: {{ attendance_records|length }}
+                    </span>
+                </div>
+                <div class="d-flex flex-wrap export-buttons">
+                    <a href="{{ url_for('admin.export_attendance', format='csv', date=selected_date, field=selected_field, course=selected_course) }}" 
+                    class="btn btn-success me-2 mb-2">
+                        <i class="bi bi-file-earmark-excel"></i> Export CSV
+                    </a>
+                    <a href="{{ url_for('admin.export_attendance_pdf', date=selected_date, field=selected_field, course=selected_course) }}" 
+                    class="btn btn-danger mb-2" id="exportPdfBtn">
+                        <i class="bi bi-file-earmark-pdf"></i> Export PDF
+                    </a>
+                </div>
+            </div>
+                        
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Student</th>
+                            <th>Roll</th>
+                            <th>Field</th>
+                            <th>Course</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in attendance_records %}
+                            {% if record.student %}
+                                <tr>
+                                    <td data-label="Student">{{ record.student.username }}</td>
+                                    <td data-label="Roll">{{ record.student.roll }}</td>
+                                    <td data-label="Field">{{ record.student.field }}</td>
+                                    <td data-label="Course">{{ record.student.course }}</td>
+                                    <td data-label="Date">{{ record.date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td data-label="Status" class="{% if 'Present' in record.status %}status-present{% elif 'Late' in record.status %}status-late{% else %}status-absent{% endif %}">
+                                        {{ record.status }}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const fieldCourseMap = {
+            "BTech": ["CSE", "Civil", "Mechanical"],
+            "BCA": ["AI-ML", "Computer Applications", "Cyber Security"],
+            "Nursing": ["General Nursing", "Pediatrics", "Psychiatric"]
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const fieldSelect = document.getElementById('fieldFilter');
+            const courseSelect = document.getElementById('courseFilter');
+            const studentSelect = document.getElementById('studentFilter');
+            const dateInput = document.getElementById('dateFilter');
+            const filterForm = document.getElementById('filter-form');
+            const exportPdfBtn = document.getElementById('exportPdfBtn');
+
+            // Restrict future dates
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.max = today;
+
+            // If no date selected, default to today
+            if (!dateInput.value) {
+                dateInput.value = today;
+            }
+
+            // Update courses based on field
+            function updateCourses(selectedField, selectedCourse) {
+                courseSelect.innerHTML = '<option value="">All Courses</option>';
+                if (fieldCourseMap[selectedField]) {
+                    fieldCourseMap[selectedField].forEach(function(course) {
+                        const opt = document.createElement('option');
+                        opt.value = course;
+                        opt.textContent = course;
+                        if (selectedCourse === course) {
+                            opt.selected = true;
+                        }
+                        courseSelect.appendChild(opt);
+                    });
+                }
+            }
+
+            // On page load, update courses
+            updateCourses(fieldSelect.value, "{{ selected_course }}");
+
+            // Event listeners to auto-submit
+            fieldSelect.addEventListener('change', function() {
+                updateCourses(this.value, "");
+                filterForm.submit();
+            });
+            courseSelect.addEventListener('change', function() {
+                filterForm.submit();
+            });
+            studentSelect.addEventListener('change', function() {
+                filterForm.submit();
+            });
+            dateInput.addEventListener('change', function() {
+                filterForm.submit();
+            });
+            
+            // Export PDF for current filters
+            exportPdfBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const date = document.getElementById('dateFilter').value;
+                const field = document.getElementById('fieldFilter').value;
+                const course = document.getElementById('courseFilter').value;
+                
+                let url = `/admin/export_attendance/pdf?date=${encodeURIComponent(date)}`;
+                if (field) url += `&field=${encodeURIComponent(field)}`;
+                if (course) url += `&course=${encodeURIComponent(course)}`;
+                
+                window.location.href = url;
+            });
+
+            // Date navigation
+            const prevBtn = document.getElementById('prevDate');
+            const nextBtn = document.getElementById('nextDate');
+
+            function updateNextBtn() {
+                nextBtn.disabled = (dateInput.value >= today);
+            }
+
+            prevBtn.addEventListener('click', function() {
+                let current = new Date(dateInput.value);
+                current.setDate(current.getDate() - 1);
+                dateInput.value = current.toISOString().split('T')[0];
+                filterForm.submit();
+            });
+
+            nextBtn.addEventListener('click', function() {
+                let current = new Date(dateInput.value);
+                current.setDate(current.getDate() + 1);
+                const newDate = current.toISOString().split('T')[0];
+                if (newDate <= today) {
+                    dateInput.value = newDate;
+                    filterForm.submit();
+                }
+            });
+
+            updateNextBtn();
+        });
+    </script>
+</body>
+</html>

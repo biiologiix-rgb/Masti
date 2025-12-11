@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Attendance</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #858796;
+            --success-color: #1cc88a;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --info-color: #36b9cc;
+            --dark-color: #5a5c69;
+            --light-color: #f8f9fc;
+        }
+        
+        body {
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8f9fc;
+        }
+        
+        .attendance-container {
+            background-color: white;
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .header-section {
+            border-bottom: 1px solid #e3e6f0;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            border-color: var(--warning-color);
+            color: #000;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+        
+        .btn-info {
+            background-color: var(--info-color);
+            border-color: var(--info-color);
+        }
+        
+        .status-select {
+            min-width: 120px;
+        }
+        
+        .stats-card {
+            border-left: 0.25rem solid var(--primary-color);
+            border-radius: 0.35rem;
+        }
+        
+        /* Mobile styles */
+        @media (max-width: 767.98px) {
+            .attendance-container {
+                padding: 1rem;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+            }
+            
+            .filter-col {
+                margin-bottom: 0.5rem;
+                width: 100%;
+            }
+            
+            .date-controls {
+                width: 100%;
+            }
+            
+            .action-buttons {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .action-buttons .btn {
+                flex: 1 0 45%;
+                margin: 0.1rem 0;
+            }
+            
+            table {
+                font-size: 0.85rem;
+            }
+            
+            .table th, .table td {
+                padding: 0.5rem;
+            }
+        }
+        
+        /* Card view for mobile table */
+        @media (max-width: 575.98px) {
+            table {
+                border: 0;
+            }
+            
+            table thead {
+                display: none;
+            }
+            
+            table tr {
+                display: block;
+                margin-bottom: 1rem;
+                border: 1px solid #e3e6f0;
+                border-radius: 0.35rem;
+            }
+            
+            table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.75rem;
+                border-bottom: 1px solid #eee;
+                text-align: right;
+            }
+            
+            table td:last-child {
+                border-bottom: 0;
+            }
+            
+            table td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                margin-right: 1rem;
+                text-align: left;
+            }
+            
+            .status-select {
+                width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="attendance-container">
+            <div class="header-section">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
+                    <h2 class="mb-3 mb-md-0">
+                        <i class="bi bi-calendar-check me-2"></i>Manage Attendance
+                    </h2>
+                    <div>
+                        <a href="/admin/dashboard" class="btn btn-outline-secondary me-2">
+                            <i class="bi bi-arrow-left"></i> Dashboard
+                        </a>
+                        <a href="{{ url_for('admin.custom_email_page') }}" class="btn btn-primary">
+                            <i class="bi bi-envelope"></i> Send Email
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- AJAX alert area -->
+                <div id="attendance-alert"></div>
+                
+                <!-- Flashed messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+            </div>
+            
+            <form id="attendance-form" method="POST">
+                <div class="row g-3 mb-4 filter-row">
+                    <div class="col-md-3 col-12 filter-col">
+                        <div class="input-group date-controls">
+                            <input type="date" name="date" id="dateFilter" class="form-control" 
+                                value="{{ selected_date or today }}"
+                                max="{{ today }}">
+                            <button type="button" id="prevDate" class="btn btn-outline-secondary">
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
+                            <button type="button" id="nextDate" class="btn btn-outline-secondary">
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-12 filter-col">
+                        <select name="field" id="fieldFilter" class="form-select">
+                            <option value="">All Fields</option>
+                            {% for f in fields %}
+                                <option value="{{ f[0] }}" {% if selected_field == f[0] %}selected{% endif %}>{{ f[0] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-12 filter-col">
+                        <select name="course" id="courseFilter" class="form-select">
+                            <option value="">All Courses</option>
+                            {% for c in courses %}
+                                <option value="{{ c[0] }}" {% if selected_course == c[0] %}selected{% endif %}>{{ c[0] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-12 filter-col">
+                        <button type="button" class="btn btn-outline-secondary w-100" onclick="resetFilters()">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="alert alert-info stats-card">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <i class="bi bi-people-fill me-2"></i>Total: {{ students|length }}
+                                </div>
+                                <div>
+                                    <span class="text-success"><i class="bi bi-check-circle-fill"></i> {{ present_count }}</span> | 
+                                    <span class="text-warning"><i class="bi bi-clock-fill"></i> {{ late_count }}</span> | 
+                                    <span class="text-danger"><i class="bi bi-x-circle-fill"></i> {{ absent_count }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 d-flex flex-wrap action-buttons justify-content-md-end">
+                        <button type="button" class="btn btn-success me-2 mb-2" onclick="bulkMark('✅Present')">
+                            <i class="bi bi-check-circle"></i> Present
+                        </button>
+                        <button type="button" class="btn btn-warning me-2 mb-2" onclick="bulkMark('⏰Present-Late')">
+                            <i class="bi bi-clock"></i> Late
+                        </button>
+                        <button type="button" class="btn btn-danger me-2 mb-2" onclick="bulkMark('❌Absent')">
+                            <i class="bi bi-x-circle"></i> Absent
+                        </button>
+                        <button type="button" class="btn btn-primary me-2 mb-2" onclick="saveAllAttendance()">
+                            <i class="bi bi-save"></i> Save All
+                        </button>
+                        <button type="button" class="btn btn-info mb-2" onclick="sendEmails()">
+                            <i class="bi bi-envelope"></i> Email Absentees
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th style="width: 40px;"><input type="checkbox" id="select-all"></th>
+                                <th>Name</th>
+                                <th>Roll</th>
+                                <th>Field</th>
+                                <th>Course</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                                {% set record = attendance_dict.get(student.id) %}
+                                <tr>
+                                    <td data-label="Select">
+                                        <input type="checkbox" class="select-row" value="{{ record.id if record else 'new-' ~ student.id }}">
+                                    </td>
+                                    <td data-label="Name">{{ student.username }}</td>
+                                    <td data-label="Roll">{{ student.roll }}</td>
+                                    <td data-label="Field">{{ student.field }}</td>
+                                    <td data-label="Course">{{ student.course }}</td>
+                                    <td data-label="Date">
+                                        {% if record %}
+                                            {{ record.date|format_local_time('Asia/Kolkata') }}
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </td>
+                                    <td data-label="Status">
+                                        <select class="form-select form-select-sm status-select" name="status-{{ record.id if record else 'new-' ~ student.id }}">
+                                            <option value="✅Present" {% if record and record.status == '✅Present' %}selected{% endif %}>Present</option>
+                                            <option value="⏰Present-Late" {% if record and record.status == '⏰Present-Late' %}selected{% endif %}>Late</option>
+                                            <option value="❌Absent" {% if not record or record.status == '❌Absent' %}selected{% endif %}>Absent</option>
+                                        </select>
+                                    </td>
+                                    <td data-label="Actions" class="action-buttons">
+                                        {% if record %}
+                                            <button type="button" class="btn btn-sm btn-success me-1" onclick="saveAttendance('{{ record.id }}')">
+                                                <i class="bi bi-check"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="deleteAttendance('{{ record.id }}')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        {% else %}
+                                            <button type="button" class="btn btn-sm btn-primary" onclick="addAttendance('{{ student.id }}')">
+                                                <i class="bi bi-plus"></i> Add
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </form>   
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Field to Course mapping
+        const fieldCourseMap = {
+            BTech: ['CSE', 'Civil', 'Mechanical'],
+            BCA: ['AI-ML', 'Computer Applications', 'Cyber Security'],
+            Nursing: ['General Nursing', 'Pediatrics', 'Psychiatric']
+        };
+
+        // Auto-submit filters
+        document.getElementById('dateFilter').addEventListener('change', function() {
+            updateNextBtn();
+            document.getElementById('attendance-form').submit();
+        });
+        
+        document.getElementById('fieldFilter').addEventListener('change', function() {
+            document.getElementById('attendance-form').submit();
+        });
+        
+        document.getElementById('courseFilter').addEventListener('change', function() {
+            document.getElementById('attendance-form').submit();
+        });
+
+        // Dynamic course dropdown
+        document.getElementById('fieldFilter').addEventListener('change', function () {
+            const courseSelect = document.getElementById('courseFilter');
+            courseSelect.innerHTML = '<option value="">All Courses</option>';
+            const selectedField = this.value;
+            if (selectedField && fieldCourseMap[selectedField]) {
+                fieldCourseMap[selectedField].forEach(course => {
+                    const opt = document.createElement('option');
+                    opt.value = course;
+                    opt.textContent = course;
+                    courseSelect.appendChild(opt);
+                });
+            }
+        });
+
+        // Select all checkbox
+        document.getElementById('select-all').addEventListener('change', function() {
+            document.querySelectorAll('.select-row').forEach(cb => cb.checked = this.checked);
+        });
+
+        // Alert functions
+        function showAlert(message, type="success") {
+            const alertDiv = document.getElementById('attendance-alert');
+            alertDiv.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show mt-2" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            setTimeout(() => {
+                if (alertDiv.firstChild) {
+                var bsAlert = bootstrap.Alert.getOrCreateInstance(alertDiv.firstChild);
+                bsAlert.close();
+                }
+            }, 5000);
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('dateFilter').value = '{{ today }}';
+            document.getElementById('fieldFilter').value = '';
+            document.getElementById('courseFilter').value = '';
+            document.getElementById('attendance-form').submit();
+        }
+
+        // Bulk mark attendance
+        function bulkMark(status) {
+            document.querySelectorAll('.select-row:checked').forEach(cb => {
+                const row = cb.closest('tr');
+                row.querySelector('select').value = status;
+            });
+        }
+
+        // Save all attendance
+        function saveAllAttendance() {
+            const requests = [];
+            document.querySelectorAll('tr').forEach(row => {
+                const select = row.querySelector('select');
+                if (!select) return;
+                const name = select.getAttribute('name');
+                const status = select.value;
+
+                // For existing records
+                if (name.startsWith('status-') && !name.startsWith('status-new-')) {
+                    const recordId = name.replace('status-', '');
+                    requests.push(
+                        fetch('/admin/attendance/save', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: `record_id=${recordId}&status=${encodeURIComponent(status)}`
+                        })
+                    );
+                }
+                // For new records
+                if (name.startsWith('status-new-')) {
+                    const studentId = name.replace('status-new-', '');
+                    const field = document.getElementById('fieldFilter').value;
+                    const course = document.getElementById('courseFilter').value;
+                    const date = document.getElementById('dateFilter').value;
+                    requests.push(
+                        fetch('/admin/attendance/add', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: `student_id=${studentId}&status=${encodeURIComponent(status)}&field=${encodeURIComponent(field)}&course=${encodeURIComponent(course)}&date=${encodeURIComponent(date)}`
+                        })
+                    );
+                }
+            });
+
+            Promise.all(requests)
+                .then(responses => Promise.all(responses.map(res => res.json())))
+                .then(results => {
+                    showAlert('All attendance records updated!', 'success');
+                    setTimeout(() => location.reload(), 800);
+                })
+                .catch(() => {
+                    showAlert('Some attendance records failed to update.', 'danger');
+                    setTimeout(() => location.reload(), 1200);
+                });
+        }
+
+        // Email absentees
+        function sendEmails() {
+            // First, save all attendance changes
+            saveAllAttendanceAndThen(sendEmailsToAbsentees);
+        }
+
+        function saveAllAttendanceAndThen(callback) {
+            const requests = [];
+            document.querySelectorAll('tr').forEach(row => {
+                const select = row.querySelector('select');
+                if (!select) return;
+                const name = select.getAttribute('name');
+                const status = select.value;
+
+                // For existing records
+                if (name.startsWith('status-') && !name.startsWith('status-new-')) {
+                    const recordId = name.replace('status-', '');
+                    requests.push(
+                        fetch('/admin/attendance/save', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: `record_id=${recordId}&status=${encodeURIComponent(status)}`
+                        })
+                    );
+                }
+                // For new records
+                if (name.startsWith('status-new-')) {
+                    const studentId = name.replace('status-new-', '');
+                    const field = document.getElementById('fieldFilter').value;
+                    const course = document.getElementById('courseFilter').value;
+                    const date = document.getElementById('dateFilter').value;
+                    requests.push(
+                        fetch('/admin/attendance/add', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: `student_id=${studentId}&status=${encodeURIComponent(status)}&field=${encodeURIComponent(field)}&course=${encodeURIComponent(course)}&date=${encodeURIComponent(date)}`
+                        })
+                    );
+                }
+            });
+
+            Promise.all(requests)
+                .then(responses => Promise.all(responses.map(res => res.json())))
+                .then(results => {
+                    if (callback) callback();
+                })
+                .catch(() => {
+                    showAlert('Some attendance records failed to update.', 'danger');
+                });
+        }
+
+        function sendEmailsToAbsentees() {
+            const date = document.getElementById('dateFilter').value;
+            const field = document.getElementById('fieldFilter').value;
+            const course = document.getElementById('courseFilter').value;
+            fetch('/admin/send-absent-emails', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `date=${encodeURIComponent(date)}&field=${encodeURIComponent(field)}&course=${encodeURIComponent(course)}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) showAlert(`Emails sent to ${data.count} absentees!`, 'success');
+                else showAlert('Failed to send emails.', 'danger');
+            })
+            .catch(() => showAlert('Failed to send emails.', 'danger'));
+        }
+
+        // Individual attendance actions
+        function addAttendance(studentId) {
+            const select = document.querySelector(`select[name="status-new-${studentId}"]`);
+            const status = select.value;
+            const field = document.getElementById('fieldFilter').value;
+            const course = document.getElementById('courseFilter').value;
+            const date = document.getElementById('dateFilter').value;
+            fetch('/admin/attendance/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `student_id=${studentId}&status=${encodeURIComponent(status)}&field=${encodeURIComponent(field)}&course=${encodeURIComponent(course)}&date=${encodeURIComponent(date)}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) showAlert('Attendance added!', 'success');
+                else showAlert('Failed to add attendance.', 'danger');
+                setTimeout(() => location.reload(), 2000);
+            });
+        }
+
+        function saveAttendance(recordId) {
+            const select = document.querySelector(`select[name="status-${recordId}"]`);
+            if (!select) {
+                showAlert('No attendance record found to save.', 'danger');
+                return;
+            }
+            const status = select.value;
+            fetch('/admin/attendance/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `record_id=${recordId}&status=${encodeURIComponent(status)}`
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) showAlert('Attendance updated!', 'success');
+                else showAlert('Failed to update attendance.', 'danger');
+                setTimeout(() => location.reload(), 2000);
+            });
+        }
+
+        function deleteAttendance(recordId) {
+            if (confirm('Are you sure you want to delete this attendance record?')) {
+                fetch('/admin/attendance/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `record_id=${recordId}`
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) showAlert('Attendance deleted!', 'success');
+                    else showAlert('Failed to delete attendance.', 'danger');
+                    setTimeout(() => location.reload(), 2000);
+                });
+            }
+        }
+
+        // Date navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateInput = document.getElementById('dateFilter');
+            const prevBtn = document.getElementById('prevDate');
+            const nextBtn = document.getElementById('nextDate');
+            const filterForm = document.getElementById('attendance-form');
+            const today = new Date().toISOString().split('T')[0];
+
+            function updateNextBtn() {
+                nextBtn.disabled = (dateInput.value >= today);
+            }
+
+            prevBtn.addEventListener('click', function() {
+                let current = new Date(dateInput.value);
+                current.setDate(current.getDate() - 1);
+                dateInput.value = current.toISOString().split('T')[0];
+                filterForm.submit();
+            });
+
+            nextBtn.addEventListener('click', function() {
+                let current = new Date(dateInput.value);
+                current.setDate(current.getDate() + 1);
+                const newDate = current.toISOString().split('T')[0];
+                if (newDate <= today) {
+                    dateInput.value = newDate;
+                    filterForm.submit();
+                }
+            });
+
+            dateInput.addEventListener('change', function() {
+                updateNextBtn();
+                filterForm.submit();
+            });
+
+            updateNextBtn();
+        });
+    </script>
+</body>
+</html>

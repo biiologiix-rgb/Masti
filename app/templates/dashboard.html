@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2563eb">
+  <title>Registered Students</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+  
+  
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+  <div class="container-fluid px-3"> 
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <i class="bi bi-journal-check me-2"></i>
+      <span class="d-none d-sm-inline">Registered Students</span>
+      <span class="d-sm-none">Registered Students</span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item ms-lg-3">
+          <a class="btn btn-outline-light" href="/"><i class="fas fa-arrow-right me-1"></i>Home</span></a>
+          <!-- <a class="btn btn-outline-light btn-sm" href="/">
+            <i class="fas fa-arrow-right me-1"></i>
+            <span class="d-none d-sm-inline">Home</span>
+          </a> -->
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid px-3 py-2"> <!-- Changed to container-fluid -->
+  <!-- Stack filters vertically on mobile -->
+  <div class="row g-2 mb-3">
+    <div class="col-12 col-md-4 col-lg-3">
+      <div class="input-group input-group-sm">
+        <input type="date" id="dateFilter" class="form-control form-control-sm" 
+               value="{{ selected_date }}" max="{{ today }}">
+        <button type="button" id="prevDate" class="btn btn-outline-secondary btn-sm">&lt;</button>
+        <button type="button" id="nextDate" class="btn btn-outline-secondary btn-sm">&gt;</button>
+      </div>
+    </div>
+    <div class="col-12 col-md-4 col-lg-3">
+      <select id="fieldFilter" class="form-select form-select-sm">
+        <option value="">All Fields</option>
+        <option value="BTech">BTech</option>
+        <option value="BCA">BCA</option>
+        <option value="Nursing">Nursing</option>
+      </select>
+    </div>
+    <div class="col-12 col-md-4 col-lg-3">
+      <select id="courseFilter" class="form-select form-select-sm">
+        <option value="">All Courses</option>
+      </select>
+    </div>
+  </div>
+  
+
+   <div class="table-responsive">
+    <table id="studentsTable" class="table table-bordered table-hover align-middle mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th onclick="sortTable(0)">Name <span class="sort-icon">↕</span></th>
+          <th onclick="sortTable(1)">Roll <span class="sort-icon">↕</span></th>
+          <th onclick="sortTable(2)">Email <span class="sort-icon">↕</span></th>
+          <th onclick="sortTable(3)">Field <span class="sort-icon">↕</span></th>
+          <th onclick="sortTable(4)">Course <span class="sort-icon">↕</span></th>
+          <th>Photo</th>
+          <th>Registered</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td class="student-name">{{ user.username }}</td>
+          <td class="student-roll">{{ user.roll }}</td>
+          <td class="student-email ">{{ user.email }}</td>
+          <td class="student-field">{{ user.field }}</td>
+          <td class="student-course">{{ user.course }}</td>
+          <td>
+            {% if user.image_path %}
+              <img src="{{ user.image_path }}" width="60" height="60" class="rounded-photo img-fluid" alt="User Photo">
+            {% else %}
+              <img src="{{ url_for('static', filename='img/default-user.png') }}" width="60" height="60" class="rounded-photo img-fluid" alt="No Photo">
+            {% endif %}
+
+
+          <td class="text-nowrap">
+            {{ user.created_at|format_local_time('Asia/Kolkata') if user.created_at else 'N/A' }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+<script>
+// Field to course mapping
+const fieldCourseMap = {
+  BTech: ['CSE', 'Civil', 'Mechanical'],
+  BCA: ['AI-ML', 'Computer Applications', 'Cyber Security'],
+  Nursing: ['General Nursing', 'Pediatrics', 'Psychiatric']
+};
+
+const fieldFilter = document.getElementById('fieldFilter');
+const courseFilter = document.getElementById('courseFilter');
+
+// Populate courses based on field
+fieldFilter.addEventListener('change', function() {
+  const selectedField = fieldFilter.value;
+  courseFilter.innerHTML = '<option value="">All Courses</option>';
+  if (fieldCourseMap[selectedField]) {
+    fieldCourseMap[selectedField].forEach(course => {
+      const opt = document.createElement('option');
+      opt.value = course;
+      opt.textContent = course;
+      courseFilter.appendChild(opt);
+    });
+  } else {
+    // If "All Fields" is selected, show all courses
+    let allCourses = [];
+    Object.values(fieldCourseMap).forEach(arr => allCourses = allCourses.concat(arr));
+    [...new Set(allCourses)].forEach(course => {
+      const opt = document.createElement('option');
+      opt.value = course;
+      opt.textContent = course;
+      courseFilter.appendChild(opt);
+    });
+  }
+  filterTable();
+});
+
+courseFilter.addEventListener('change', filterTable);
+
+function filterTable() {
+  const field = fieldFilter.value;
+  const course = courseFilter.value;
+  document.querySelectorAll('#studentsTable tbody tr').forEach(row => {
+    const rowField = row.querySelector('.student-field').textContent.trim();
+    const rowCourse = row.querySelector('.student-course').textContent.trim();
+    row.style.display =
+      (field === "" || rowField === field) &&
+      (course === "" || rowCourse === course)
+      ? "" : "none";
+  });
+}
+
+// Sortable columns
+function sortTable(n) {
+  const table = document.getElementById("studentsTable");
+  let switching = true, dir = "asc", switchcount = 0;
+  while (switching) {
+    switching = false;
+    const rows = table.rows;
+    for (let i = 1; i < (rows.length - 1); i++) {
+      let shouldSwitch = false;
+      let x = rows[i].getElementsByTagName("TD")[n];
+      let y = rows[i + 1].getElementsByTagName("TD")[n];
+      if (dir === "asc" ? x.textContent.toLowerCase() > y.textContent.toLowerCase()
+                        : x.textContent.toLowerCase() < y.textContent.toLowerCase()) {
+        shouldSwitch = true;
+        break;
+      }
+    }
+    if (shouldSwitch) {
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      switchcount++;
+    } else if (switchcount === 0 && dir === "asc") {
+      dir = "desc";
+      switching = true;
+    }
+  }
+}
+
+// On page load, populate all courses
+(function() {
+  let allCourses = [];
+  Object.values(fieldCourseMap).forEach(arr => allCourses = allCourses.concat(arr));
+  [...new Set(allCourses)].forEach(course => {
+    const opt = document.createElement('option');
+    opt.value = course;
+    opt.textContent = course;
+    courseFilter.appendChild(opt);
+  });
+})();
+</script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>

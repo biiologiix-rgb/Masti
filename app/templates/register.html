@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Dashboard - Create Account</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    
+    <style>
+      body {
+        font-family: sans-serif;
+        display: flex;
+        justify-content: center;
+        margin-top: 60px;
+      }
+      .form-step { display: none; transition: opacity 0.5s ease; }
+      .form-step.active { display: block; opacity: 1; }
+      .form-group { margin-bottom: 15px; }
+      .hidden { display: none; }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <i class="fas fa-shield-alt"></i>Bio-Logix
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li>
+           <a class="btn btn-outline-light" href="/"><i class="fas fa-arrow-left me-1"></i>Home</a>          
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="register.html">Register</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <i class="fas fa-question-circle"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container flex-grow-1">
+  <div class="register-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="register-header">
+      <h2>Register Student</h2>
+      <p>Bio-Logix Registration Form</p>
+    </div>
+    <div id="register-alert"></div>
+    <form method="POST" action="/register-face" enctype="multipart/form-data" id="face-form">
+      <!-- Step 1: Field and Course -->
+      <div id="step1" class="mb-3">
+        <label for="field" class="form-label">Field</label>
+        <select class="form-select" id="field" name="field" required>
+          <option value="" disabled selected>Select Field</option>
+          <option value="BTech">BTech</option>
+          <option value="BCA">BCA</option>
+          <option value="Nursing">Nursing</option>
+        </select>
+
+        <label for="course" class="form-label mt-3">Course</label>
+        <select class="form-select" id="course" name="course" required>
+          <option value="" disabled selected>Select Course</option>
+        </select>
+
+        <div class="d-grid gap-2 mt-3">
+          <button type="button" class="btn btn-primary" id="toStep2Btn">Next</button>
+        </div>
+      </div>
+      <!-- Step 2: Details and Email Verification -->
+      <div id="step2" style="display:none">
+        <div id="details-fields">
+          <div class="mb-3">
+            <label for="username" class="form-label">Student name</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Enter your name" required maxlength="20">
+          </div>
+          <div class="mb-3">
+            <label for="roll" class="form-label">Roll.no</label>
+            <input type="number" class="form-control" id="roll" name="roll" placeholder="Enter your Roll number" required min="1" max="99">
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <div class="input-group">
+              <input type="email" class="form-control" id="email" name="email" placeholder="Enter your Email" required>
+              <button type="button" class="btn btn-outline-primary" id="sendCodeBtn">Send Code</button>
+            </div>
+          </div>
+          <div class="mb-3" id="codeDiv" style="display:none;">
+            <label for="verifyCode" class="form-label">Enter Verification Code</label>
+            <input type="text" class="form-control" id="verifyCode" maxlength="6" placeholder="Enter code from email">
+            <button type="button" class="btn btn-success mt-2" id="verifyCodeBtn">Verify Code</button>
+          </div>
+          <div class="d-grid gap-2 mb-3">
+            <button type="button" class="btn btn-primary btn-register" id="toScannerBtn">Next</button>
+          </div>
+        </div>
+        <!-- Webcam Scanner -->
+        <div id="scanner-div" style="display: none;">
+          <video id="video" autoplay></video>
+          <canvas id="canvas" width="300" height="240" style="display: none;"></canvas>
+          <br>
+          <button type="button" onclick="capture()" class="custom-capture-btn btn mt-2">Capture Face</button>
+          <input type="hidden" name="image" id="image">
+          <button type="submit" class="btn btn-outline-primary mt-2">Submit-Face</button>
+        </div>
+      </div>
+      <div class="text-center">
+        Already registered yourself? <a href="/" class="text-decoration-none">Back to Attendance Page</a>
+      </div>
+      <div class="security-info">
+        <i class="fas fa-shield-alt"></i>
+        <span>Your information is securely encrypted</span>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Terms Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Terms of Service</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy Modal -->
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Privacy Policy</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="py-3 text-center text-muted small">
+  <div class="container">
+    <div class="footer-links">
+      <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms of Service</a>
+      <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a>
+      <a href="#">Contact Us</a>
+    </div>
+    <p class="mt-2 mb-0">© 2025 Bio-Logix. All rights reserved.</p>
+  </div>
+</footer>
+
+<!-- Bootstrap & Font Awesome JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+<script src="{{ url_for('static', filename='js/register.js') }}"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const fieldSelect = document.getElementById('field');
+  const courseSelect = document.getElementById('course');
+  const courseMap = {
+    BTech: ['CSE', 'Civil', 'Mechanical'],
+    BCA: ['AI-ML', 'Computer Applications','Cyber Security'],
+    Nursing: ["General Nursing", "Pediatrics", "Psychiatric"]
+  };
+  fieldSelect.addEventListener('change', () => {
+    const selectedField = fieldSelect.value;
+    courseSelect.innerHTML = '<option value="" disabled selected>Select Course</option>';
+    if (courseMap[selectedField]) {
+      courseMap[selectedField].forEach(course => {
+        const opt = document.createElement('option');
+        opt.value = course;
+        opt.textContent = course;
+        courseSelect.appendChild(opt);
+      });
+    }
+  });
+
+  // Step navigation
+  document.getElementById('toStep2Btn').addEventListener('click', function() {
+    if (!fieldSelect.value || !courseSelect.value) {
+      showFlashMessage('Please select both Field and Course.', 'danger');
+      return;
+    }
+    document.getElementById('step1').style.display = 'none';
+    document.getElementById('step2').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Only allow going to scanner after email is verified
+  document.getElementById('toScannerBtn').addEventListener('click', function() {
+    // You can add extra validation here if needed
+    if (!document.getElementById('email').classList.contains('is-valid')) {
+      showFlashMessage('Please verify your email before proceeding.', 'danger');
+      return;
+    }
+    document.getElementById('scanner-div').style.display = 'block';
+    document.getElementById('details-fields').style.display = 'none';
+    showScannerDiv();
+  });
+
+  function showFlashMessage(message, category) {
+    const alertDiv = document.getElementById('register-alert');
+    alertDiv.innerHTML = `
+      <div class="alert alert-${category} alert-dismissible fade show mt-3" role="alert">
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `;
+    setTimeout(() => {
+      if (alertDiv.firstChild) {
+        var bsAlert = bootstrap.Alert.getOrCreateInstance(alertDiv.firstChild);
+        bsAlert.close();
+      }
+    }, 5000);
+  }
+
+  document.getElementById('sendCodeBtn').addEventListener('click', function() {
+    const email = document.getElementById('email').value.trim();
+    if (!email) {
+      showFlashMessage('Please enter your email.', 'danger');
+      return;
+    }
+    fetch('/send-verification-code', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `email=${encodeURIComponent(email)}`
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showFlashMessage(data.message, 'success');
+        document.getElementById('codeDiv').style.display = 'block';
+      } else {
+        showFlashMessage(data.message, 'danger');
+      }
+    });
+  });
+
+  document.getElementById('verifyCodeBtn').addEventListener('click', function() {
+    const code = document.getElementById('verifyCode').value.trim();
+    fetch('/verify-code', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: `code=${encodeURIComponent(code)}`
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showFlashMessage('Email verified! You can now click next to register your face.', 'success');
+        document.getElementById('email').classList.add('is-valid');
+        setTimeout(() => {
+          if (data.redirect) {
+            window.location.href = data.redirect;
+          }
+        }, 3000);
+      } else {
+        showFlashMessage(data.message, 'danger');
+      }
+    });
+  });
+
+  // Input restrictions
+  document.getElementById('username').addEventListener('input', function(e) {
+    this.value = this.value.replace(/[^A-Za-z ]/g, '');
+  });
+  document.getElementById('roll').addEventListener('input', function(e) {
+    this.value = this.value.replace(/[^0-9]/g, '');
+    if (this.value.length > 2) {
+      this.value = this.value.slice(0, 2);
+    }
+    if (parseInt(this.value) > 99) {
+      this.value = '99';
+    }
+    if (parseInt(this.value) < 1 && this.value !== '') {
+      this.value = '1';
+    }
+  });
+
+  function showScannerDiv() {
+    document.getElementById('scanner-div').style.display = 'block';
+    startCamera();
+  }
+  function startCamera() {
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        const video = document.getElementById('video');
+        video.srcObject = stream;
+        video.play();
+      })
+      .catch(err => {
+        console.error("Error accessing webcam: ", err);
+      });
+  }
+  window.capture = function() {
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    if (!video || !canvas || !context) {
+      console.error("Video or canvas not found!");
+      return;
+    }
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const dataURL = canvas.toDataURL('image/jpeg');
+    if (!dataURL.startsWith("data:image")) {
+      alert("Failed to capture image. Please try again.");
+      setTimeout(() => {
+      errorDiv.remove();
+    }, 3000);
+      return;
+    }
+    document.getElementById('image').value = dataURL;
+  }
+
+  document.getElementById('face-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const canvas = document.getElementById('canvas');
+    const imageData = canvas.toDataURL('image/jpeg');
+    document.getElementById('image').value = imageData;
+    fetch('/register-face', {
+      method: 'POST',
+      body: new FormData(document.getElementById('face-form'))
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        showFlashMessage(data.message, 'success');
+        setTimeout(() => {
+          if (data.redirect) {
+            window.location.href = data.redirect;
+          }
+        }, 2000);
+      } else {
+        showFlashMessage(data.message || 'Registration failed.', 'danger');
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>
