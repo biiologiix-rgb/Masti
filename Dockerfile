@@ -1,7 +1,7 @@
-# Use Python 3.9 (compatible with dlib & face_recognition)
-FROM python:3.9-slim-bullseye
+# Use Python 3.10 (stable + compatible with dlib & face_recognition)
+FROM python:3.10-slim-bullseye
 
-# Install system dependencies for dlib & face_recognition
+# Install system dependencies for dlib, face_recognition & OpenCV
 RUN apt-get update && apt-get install -y \
     build-essential cmake \
     libopenblas-dev liblapack-dev \
@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Set workdir
+# Set working directory
 WORKDIR /app
 
 # Install Python dependencies
@@ -17,11 +17,11 @@ COPY requirements.txt .
 RUN pip install --upgrade pip setuptools wheel
 RUN pip install -r requirements.txt
 
-# Copy app code
+# Copy application code
 COPY . .
 
-# Expose port (Railway overrides with $PORT)
-EXPOSE 5000
+# Expose Render's default port
+EXPOSE 10000
 
-# Start Gunicorn server
-CMD ["gunicorn", "run:app", "--bind", "0.0.0.0:5000"]
+# Start Gunicorn (Render injects PORT automatically)
+CMD gunicorn run:app --bind 0.0.0.0:$PORT
